@@ -1,5 +1,4 @@
 import numpy as np
-import spacy
 
 
 def normalized_terms(tokens):
@@ -18,15 +17,11 @@ def normalized_terms(tokens):
     return [token.lemma_ for token in tokens if (not token.is_stop) and token.is_alpha]
 
 
-def create_term_sentence(file):
-    # English language processing object
-    nlp = spacy.load('en_core_web_sm')
-    doc = nlp(file.read())
+def normalized_sentences(doc):
+    return [normalized_terms(sentence) for sentence in doc.sents]
 
-    # Extract normalized terms and as sentences from the document
-    terms = np.unique(normalized_terms(doc))
-    sentences = [normalized_terms(sentence) for sentence in doc.sents]
 
+def create_term_sentence(terms, sentences):
     # Construct the term-sentence matrix A
     # This will be a *highly* sparse matrix, meaning lots of wasted memory :c
     A = np.zeros((len(terms), len(sentences)))
