@@ -18,10 +18,30 @@ def normalized_terms(tokens):
 
 
 def normalized_sentences(doc):
+    """
+    Returns a list of the sentences in `doc` with normalized terms, as specified by the `normalized_terms` function.
+
+    ## Parameters:
+    doc: A document which has been processed by some NLP model, e.g. Spacy
+
+    ## Returns:
+    normalized_sentences: A list of the sentences given in `doc`, each consisting only of the relevant terms determined by the `normalized_terms` function
+    """
     return [normalized_terms(sentence) for sentence in doc.sents]
 
 
 def create_term_sentence(terms, sentences):
+    """
+    Constructs a term-sentence matrix where each column corresponds to one sentence and each row corresponds to a term.
+    The element at row *i* and column *j* will correspond to the frequency of term *i* in sentence *j*.
+
+    ## Parameters:
+    terms: A list of terms from some NLP model
+    sentences: A list of sentences consisting of the terms given in `terms`
+
+    ## Returns:
+    A: The term-sentence matrix
+    """
     # Construct the term-sentence matrix A
     # This will be a *highly* sparse matrix, meaning lots of wasted memory :c
     A = np.zeros((len(terms), len(sentences)))
