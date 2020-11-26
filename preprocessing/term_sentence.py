@@ -45,11 +45,24 @@ def create_term_sentence(terms, sentences):
     # Construct the term-sentence matrix A
     # This will be a *highly* sparse matrix, meaning lots of wasted memory :c
     A = np.zeros((len(terms), len(sentences)))
+    df = np.zeros(len(terms))
 
     for j, sentence in enumerate(sentences):
+        for i, term in enumerate(terms):
+            # Compute document frequency for each term
+            if term in sentence:
+                df[i] += 1
+
         for term in sentence:
             # Find the term indices to increment the proper element in sentence column
             i = np.where(terms == term)
             A[i, j] += 1
+
+        # Divide frequency by word occurence in the sentence
+        A[:, j] /= np.sum(A[:, j])
+
+    # Compute the IDF weights
+    idf = np.log(len(sentences)/df)
+    A *= idf[:, np.newaxis]
 
     return A
