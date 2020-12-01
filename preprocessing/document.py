@@ -8,6 +8,7 @@ class Document:
     nlp_content = None
     terms = []
     sentences = []
+    raw_sentences = []
 
     def __init__(self, filename, nlp):
         """
@@ -28,6 +29,7 @@ class Document:
         # Extract normalized terms and as sentences from the document
         self.terms = np.unique(normalized_terms(self.nlp_content))
         self.sentences = normalized_sentences(self.nlp_content)
+        self.raw_sentences = list(self.nlp_content.sents)
 
     def get_normalized_content(self):
         """
