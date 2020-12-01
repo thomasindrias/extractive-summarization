@@ -2,6 +2,8 @@ import spacy
 import numpy as np
 from preprocessing.document import Document
 from preprocessing.term_sentence import create_term_sentence
+from saliency.saliency_score import saliency_score
+from key_sentence.key_sentence import key_sentence
 
 # English language processing object
 nlp = spacy.load('en_core_web_sm')
@@ -22,3 +24,17 @@ print(doc.terms)
 
 print("\nFirst column of A:")
 print(A[:, 0])
+
+key_terms = saliency_score(A)
+
+k=4
+key_sencences = key_sentence(A, k, top=3)
+
+print("\n========= Key terms ============\n")
+
+print(doc.terms[key_terms])
+
+print("\n========= Key sentences ============\n")
+
+for (i, sentence) in enumerate(key_sencences):
+    print(i, ":", doc.raw_sentences[sentence])
