@@ -8,15 +8,13 @@ Let all web pages be ordered from 1 to n and let i be a particular web page. The
 
 In general, a page i can be considered as more important the more inlinks it has. However, a ranking system based only on the number of inlinks is easy to manipulate [23]: When you design a web page i that (e.g. for commercial reasons) you would like to be seen by as many as possible, you could simply create a large number of (information-less and unimportant) pages that have outlinks to i. In order to discourage this, one defines the rank of i in such a way that if a highly ranked page j, has an outlink to i, this adds to the importance of i in the following way: the rank of page i is a weighted sum of the ranks of the pages that have outlinks to i. The weighting is such that the rank of a page j is divided evenly among its outlinks. The preliminary definition of Pagerank is ri = X.
 
-This definition is recursive, so pageranks cannot be computed directly. Instead a fixed-point iteration might be used: Guess an initial ranking vector r0. Then iterate
+This definition is recursive, so pageranks cannot be computed directly. Instead a fixed-point iteration might be used: Guess an initial ranking vector r0.
 
 There are a few problems with this iteration: if a page has no outlinks, then in the iteration process it only accumulates rank via its inlinks, but this rank is never distributed further. Therefore, it is not clear if the iteration converges. We will come back to this question later.
 
 For an example of attempts to fool a search engine, see [78].
 
 More insight is gained if we reformulate (13.1) as an eigenvalue problem fora matrix representing the graph of the Internet. Let Q be a square matrix of dimension n. Then define Qij = ae 1/Nj if there is a link from j to i0 otherwise. This definition means that row i has nonzero elements in those positions that correspond to inlinks of i. Similarly, column j has nonzero elements equal to Nj in those positions that correspond to the outlinks of j, and, provided that the page has outlinks, the sum of all the elements in column j is equal to one. In the following symbolic picture of the matrix Q, non-zero elements are denoted *:
-
-The corresponding matrix becomes
 
 Since page 4 has no outlinks, the corresponding column is equal to zero.
 
@@ -28,15 +26,13 @@ A Markov chain is a random process, where the next state is determined completel
 
 The transition matrix of the Markov chain is QT. (Note that we use a slightly different notation than is common in the theory of stochastic processes).
 
-The random surfer should never get stuck. In other words, our random walk model should have no pages without outlinks (such a page corresponds to a zero column in Q). Therefore, the model is modified so that zero columns are replaced by a constant value in all positions. This means that there is equal probability to go to any other page in the net. Define the vectors dj = ae 1 if Nj = 00 otherwise, for j = 1, . . ., n, and
+The random surfer should never get stuck. In other words, our random walk model should have no pages without outlinks (such a page corresponds to a zero column in Q). Therefore, the model is modified so that zero columns are replaced by a constant value in all positions. This means that there is equal probability to go to any other page in the net.
 
-The modified matrix is defined P = Q + 1n edT. (13.5)
+The modified matrix is defined P = Q + 1n edT.
 
 With this modification the matrix P is a proper column-stochastic matrix: It has non-negative elements and the elements of each column sum up to 1. The preceding statement can be reformulated as follows.
 
 Proposition 13.3. A column-stochastic matrix P satisfies eT P = eT, (13.6) where e is defined by (13.4).
-
-Example 13.4 The matrix in the previous example is modified to
 
 Now, in analogy to (13.3), we would like to define the pagerank vector as a unique eigenvector of P with eigenvalue 1, P r = r. However, the existence of such a unique eigenvalue is still not guaranteed. The eigenvector of the transition matrix corresponds to a stationary probability distribution for the Markov chain: The element in position i, ri, is the probability that after a large number of steps, the random walker is at web page i. To ensure the existence of a unique distribution, the matrix must be irreducible, cf. [46].
 
@@ -68,10 +64,6 @@ Theorem 13.9 ([52]). Assume that the eigenvalues of the column-stochastic matrix
 
 Proof. Define ^e to be e normalized to Euclidean length 1 and let U1 2 Rn*(n-1) be such that U = \Gamma ^e U1\Delta is orthogonal. Then, since ^eT P = ^eT, where w = U T1 P ^e, and T = U T1 P T U1. Since we have made a similarity transformation, the matrix T has the eigenvalues *2, *3, . . ., *n.
 
-We further have
-
-Therefore,
-
 The statement now follows immediately.
 
 Theorem 13.9 implies that even if P has a multiple eigenvalue equal to 1, which is actually the case for the Google matrix, the second largest eigenvalue in magnitude of A is always equal to ff. Example 13.10 We compute the eigenvalues and eigenvectors of the matrix A = ffP + (1 - ff) 1n eeT , with P from (13.7) and ff = 0.85. The MATLAB code
@@ -97,8 +89,6 @@ Obviously, since for j = 2, 3, . . . , we have |*j| < 1, the second term tends t
 This assumption can be expected to be satisfied in floating point arithmetic, if not at the first iteration, so after the second, due to round off.
 
 Assume that the vector z satisfies k z k1 = eT z = 1, and that the matrix A is column-stochastic. 
-
-Then
 
 Proof. Put y = Az. Then k y k1 = eT y = eT Az = eT z = 1 since A is column-stochastic (eT A = eT).
 
