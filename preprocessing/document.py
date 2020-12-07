@@ -1,38 +1,36 @@
 import numpy as np
+from nltk.tokenize import PunktSentenceTokenizer
+from nltk.tokenize import word_tokenize
 from preprocessing.term_sentence import normalized_terms
-from preprocessing.term_sentence import normalized_sentences
-
 
 class Document:
     raw_content = ''
-    nlp_content = None
     terms = []
     sentences = []
     raw_sentences = []
 
-    def __init__(self, filename, nlp):
+    def __init__(self, filename, lemmatizer, stop_words):
         """
-        Reads text content from the given filename then processes this with the given NLP object.
-        The `terms` and `sentences` obtained through the NLP object are made available as member fields,
-        and the general result of the NLP process is available via the `nlp_content` field.
+        Reads text content from the given filename then processes this using the given lemmatizer and stop word list.
+        The `terms` and `sentences` obtained through this processing are made available as member fields.
 
         ## Parameters
         filename: A path to the text document to read from.
-        nlp: A natural language processing model, e.g. using the Spacy library.
+        lemmatizer: A natural language processing lemmatizer, e.g. using the WordNetLemmatizer from NLTK. Must have a method `lemmatize`.
+        stop_words: A list of stop words to ignore when extracting terms.
         """
         with open(filename) as f:
             self.raw_content = f.read()
 
-        # Process the document using the given nlp-model
-        self.nlp_content = nlp(self.get_normalized_content())
+        # Split into sentences
+        sent_tokenizer = PunktSentenceTokenizer(self.raw_content)
+        self.raw_sentences = np.array(sent_tokenizer.tokenize(self.raw_content))
 
-        # Extract normalized terms and as sentences from the document
-        self.terms = np.unique(normalized_terms(self.nlp_content))
-        self.sentences = normalized_sentences(self.nlp_content)
-        self.raw_sentences = list(self.nlp_content.sents)
+        # Tokenize each sentence and normalize the terms
+        self.sentences = [word_tokenize(sent) for sent in self.raw_sentences]
+        self.sentences = np.array([normalized_terms(
+            sent, lemmatizer, stop_words) for sent in self.sentences])
 
-    def get_normalized_content(self):
-        """
-        Performs any necessary preprocessing on the raw document content, given in `raw_content`, before NLP.
-        """
-        return self.raw_content.lower()
+        # Collect unique terms across all tokenized sentences
+        self.terms = np.unique(
+            [term for sent in self.sentences for term in sent])

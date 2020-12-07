@@ -1,33 +1,35 @@
 import numpy as np
 
 
-def normalized_terms(tokens):
+def is_valid_length(token):
+    """
+    Defines whether or not a given token is of appropriate length.
+
+    ## Returns:
+    `True` if the token is longer then two characters but shorter than fifteen, `False` otherwise
+    """
+    return len(token) > 2 and len(token) < 15
+
+
+def normalized_terms(tokens, lemmatizer, stop_words):
     """
     Returns a list of all alphabetic (non-numeric, non-punctuation) terms,
-    disregarding stop words as defined by the Spacy library. The individual terms
-    will be lemmatized, i.e. in base dictionary form.
+    disregarding the given stop words. The individual terms
+    will be lemmatized, i.e. in base dictionary form according to the given lemmatizer.
 
     ## Parameters:
     tokens: A collection of Spacy tokens e.g. from a document or sentence
+    lemmatizer: A natural language processing lemmatizer, e.g. using the WordNetLemmatizer from NLTK. Must have a method `lemmatize`.
+    stop_words: A list of stop words to ignore when extracting terms.
 
     ## Returns:
     normalized_terms: A list of lemmatized, non-stop-word terms in `tokens`,
     preserving their original order 
     """
-    return [token.lemma_ for token in tokens if (not token.is_stop) and token.is_alpha]
-
-
-def normalized_sentences(doc):
-    """
-    Returns a list of the sentences in `doc` with normalized terms, as specified by the `normalized_terms` function.
-
-    ## Parameters:
-    doc: A document which has been processed by some NLP model, e.g. Spacy
-
-    ## Returns:
-    normalized_sentences: A list of the sentences given in `doc`, each consisting only of the relevant terms determined by the `normalized_terms` function
-    """
-    return [normalized_terms(sentence) for sentence in doc.sents]
+    return [
+        lemmatizer.lemmatize(token.lower()) for token in tokens
+        if token not in stop_words and token.isalpha() and is_valid_length(token)
+    ]
 
 
 def create_term_sentence(terms, sentences):
