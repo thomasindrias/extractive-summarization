@@ -26,21 +26,23 @@ def main(path):
     print(f'Number of sentences: {len(doc.sentences)}')
     print(f'Maximum term frequency in one sentence: {np.max(A)}')
 
-    print("\nTerms:")
-    print(doc.terms)
+    #print("\nTerms:")
+    #print(doc.terms)
 
-    print("\nFirst column of A:")
-    print(A[:, 0])
+    #print("\nFirst column of A:")
+    #print(A[:, 0])
 
     u, key_terms, key_sencences_sorted = saliency_score(A)
     key_sencences_sorted = key_sencences_sorted.flatten()
 
-    k=5
+    k=10
     key_sencences, C = key_sentence(A, k, top=5)
 
     print("\n========= Key terms ============\n")
 
-    print(doc.terms[key_terms])
+    print(doc.terms[key_terms][0][:10])
+    print("\n")
+    
     for (i, sentence) in enumerate(key_sencences_sorted[:5]):
         print(i, ":", doc.raw_sentences[sentence])
 
@@ -51,6 +53,6 @@ def main(path):
     
     return u, C
 
-paths = ['data/wikipedia_text_mining.txt', 'data/the_guardian_vaccine_article.txt', 'data/elden_ch13.txt']
+paths = ['data/wikipedia_text_mining.txt', 'data/the_guardian_vaccine_article.txt', 'data/weirdest_computer.txt']
 
-
+main('data/weirdest_computer.txt')
