@@ -26,9 +26,9 @@ def key_sentence(A, k, top=3):
     """
 
     # Approximation of A ≈ C*D
-    _, _, D = rank_k_A(A, k)
+    _, C, D = rank_k_A(A, k)
     
     # QR pivoting of matrix D
     Q, RS, P = linalg.qr(D, pivoting=True)
     
-    return P[:top]
+    return P[:top], C
