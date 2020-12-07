@@ -1,7 +1,9 @@
 import numpy as np
+import re
 from nltk.tokenize import PunktSentenceTokenizer
 from nltk.tokenize import word_tokenize
 from preprocessing.term_sentence import normalized_terms
+
 
 class Document:
     raw_content = ''
@@ -22,14 +24,25 @@ class Document:
         with open(filename) as f:
             self.raw_content = f.read()
 
+        # Remove extraneous whitespace
+        # [\.\W]
+        self.raw_content = re.sub('[\.\W]\s\s+', '. ', self.raw_content)
+        self.raw_content = re.sub('\n', ' ', self.raw_content)
+
         # Split into sentences
         sent_tokenizer = PunktSentenceTokenizer(self.raw_content)
-        self.raw_sentences = np.array(sent_tokenizer.tokenize(self.raw_content))
+        self.raw_sentences = np.array(
+            sent_tokenizer.tokenize(self.raw_content))
 
         # Tokenize each sentence and normalize the terms
         self.sentences = [word_tokenize(sent) for sent in self.raw_sentences]
         self.sentences = np.array([normalized_terms(
             sent, lemmatizer, stop_words) for sent in self.sentences])
+
+        # Find and discard any empty sentences at this point
+        non_empty = np.where([sent.size > 0 for sent in self.sentences])
+        self.raw_sentences = self.raw_sentences[non_empty]
+        self.sentences = self.sentences[non_empty]
 
         # Collect unique terms across all tokenized sentences
         self.terms = np.unique(

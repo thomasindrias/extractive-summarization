@@ -26,10 +26,10 @@ def normalized_terms(tokens, lemmatizer, stop_words):
     normalized_terms: A list of lemmatized, non-stop-word terms in `tokens`,
     preserving their original order 
     """
-    return [
+    return np.array([
         lemmatizer.lemmatize(token.lower()) for token in tokens
         if token not in stop_words and token.isalpha() and is_valid_length(token)
-    ]
+    ])
 
 
 def create_term_sentence(terms, sentences):
