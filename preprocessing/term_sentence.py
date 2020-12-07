@@ -59,7 +59,7 @@ def create_term_sentence(terms, sentences):
             A[i, j] += 1
 
         # Divide frequency by word occurence in the sentence
-        A[:, j] /= A[:, j].size
+        # A[:, j] /= A[:, j].size
 
     # Compute the IDF weights
     idf = np.log(len(sentences)/df)
