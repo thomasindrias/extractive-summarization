@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import linalg
+from scipy.sparse.linalg import svds
 
 def rank_k_A(A, k):
     """
@@ -10,9 +11,11 @@ def rank_k_A(A, k):
     k: Rank, k < min(m,n)
     """
 
-    U,S,V = np.linalg.svd(A)
-    C = U[:, :k]
-    D = np.diag(S[:k])@V[:,:k].T
+    C,S,V = svds(A, k=k, which='LM')
+    # C = U[:, :k]
+    # D should have shape = k * n
+    # C should have shape = m * k
+    D = np.diag(S)@V
     return C@D, C, D
 
 def key_sentence(A, k, top=3):
@@ -31,4 +34,5 @@ def key_sentence(A, k, top=3):
     # QR pivoting of matrix D
     Q, RS, P = linalg.qr(D, pivoting=True)
     
+    # This seems to be in the wrong order maybe?
     return P[:top], C

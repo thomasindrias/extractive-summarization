@@ -7,8 +7,8 @@ def saliency_score(A):
     # u, s, vh = np.linalg.svd(A, 1)
     u, s, vt = svds(A, k=1, which='LM')
 
-    # u = u[0]
+    # sort u and vt
+    u = np.array(abs(u)).flatten()
+    vt = np.array(abs(vt)).flatten()
 
-    u = abs(u)
-
-    return(u, np.argsort(-u.T), np.argsort(vt))
+    return(u, np.argsort(-u), np.argsort(-vt))
