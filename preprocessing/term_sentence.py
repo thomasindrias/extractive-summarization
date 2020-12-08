@@ -26,10 +26,12 @@ def normalized_terms(tokens, lemmatizer, stop_words):
     normalized_terms: A list of lemmatized, non-stop-word terms in `tokens`,
     preserving their original order 
     """
-    return np.array([
+    normalized_terms = [
         lemmatizer.lemmatize(token.lower()) for token in tokens
-        if token not in stop_words and token.isalpha() and is_valid_length(token)
-    ])
+        if token and token.isalpha() and is_valid_length(token)
+    ]
+
+    return np.array([term for term in normalized_terms if term not in stop_words])
 
 
 def create_term_sentence(terms, sentences):
@@ -60,11 +62,12 @@ def create_term_sentence(terms, sentences):
             i = np.where(terms == term)
             A[i, j] += 1
 
-        # Divide frequency by word occurence in the sentence
-        # A[:, j] /= A[:, j].size
-
     # Compute the IDF weights
     idf = np.log(len(sentences)/df)
     A *= idf[:, np.newaxis]
+
+    for j in range(len(sentences)):
+        # Divide by the norm of the column instead
+        A[:, j] /= np.linalg.norm(A[:, j])
 
     return A

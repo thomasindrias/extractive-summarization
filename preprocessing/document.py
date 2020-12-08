@@ -24,9 +24,20 @@ class Document:
         with open(filename) as f:
             self.raw_content = f.read()
 
+        self.process(lemmatizer, stop_words)
+
+
+    def process(self, lemmatizer, stop_words):
+        """
+        Processes the raw content of the document into terms and sentences for use in forming a term-sentence matrix.
+        Sets the member fields `terms`, `sentences` and `raw_sentences` based on the contents of the field `raw_content`.
+
+        ## Parameters
+        lemmatizer: A natural language processing lemmatizer, e.g. using the WordNetLemmatizer from NLTK. Must have a method `lemmatize`.
+        stop_words: A list of stop words to ignore when extracting terms.
+        """
         # Remove extraneous whitespace
-        # [\.\W]
-        self.raw_content = re.sub('[\.\W]\s\s+', '. ', self.raw_content)
+        # self.raw_content = re.sub('[\.\W]\s\s+', '. ', self.raw_content)
         self.raw_content = re.sub('\n', ' ', self.raw_content)
 
         # Split into sentences
