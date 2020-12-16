@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import linalg
 from scipy.sparse.linalg import svds
+from numpy.linalg import svd
 
 def rank_k_A(A, k):
     """
@@ -11,11 +12,11 @@ def rank_k_A(A, k):
     k: Rank, k < min(m,n)
     """
 
-    C,S,V = svds(A, k=k, which='LM')
-    # C = U[:, :k]
+    C,S,V = svds(A, k=k)
     # D should have shape = k * n
     # C should have shape = m * k
     D = np.diag(S)@V
+    
     return C@D, C, D
 
 def key_sentence(A, k, top=3):

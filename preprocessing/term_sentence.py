@@ -1,5 +1,5 @@
 import numpy as np
-
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def is_valid_length(token):
     """
@@ -62,12 +62,11 @@ def create_term_sentence(terms, sentences):
             i = np.where(terms == term)
             A[i, j] += 1
 
-    # Compute the IDF weights
-    idf = np.log(len(sentences)/df)
-    A *= idf[:, np.newaxis]
+        A[:, j] /= np.linalg.norm(A[:, j])  # Normalize columns
 
-    for j in range(len(sentences)):
-        # Divide by the norm of the column instead
-        A[:, j] /= np.linalg.norm(A[:, j])
+    # Compute the IDF weights
+    # idf = np.log(len(sentences)/(df+1))+1 # Soft
+    idf = np.log(len(sentences)/df)         # Standard
+    A *= idf[:, np.newaxis]
 
     return A
