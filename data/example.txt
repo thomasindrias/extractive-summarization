@@ -1,0 +1,6 @@
+Hello, my name is Frans and I love coffee.
+I like Python.
+Coffee is quite nice since coffee is tasty.
+I am also quite good at mathematics: 1 + 1 = 2.
+Algebra is also fun, for example we can make a function f(x) = e^x.
+Which has the derivative d/dx = e^x, e.g. it is its own derivative!
